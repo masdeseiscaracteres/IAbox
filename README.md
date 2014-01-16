@@ -23,9 +23,9 @@ Brief description
 -------
 This software contains the following Matlab/Octave files:
 
- - `check_IA_feasibility.m` is an independent function implementing the aforementioned floating point feasibility test. It is the only function you will need if you want to execute the test from your own code.
- - `system_str2vec.m` is a convenience function that takes a text string representing an interference channel and converts it to a set of vectors which will serve as inputs of `check_IA_feasibility`.
- - `main.m` is a self-explanatory script which shows the use of both  `check_IA_feasibility` and `system_str2vec` by means of a simple example.
+ - [`check_IA_feasibility.m`](check_IA_feasibility.m) is an independent function implementing the aforementioned floating point feasibility test. It is the only function you will need if you want to execute the test from your own code.
+ - [`system_str2vec.m`](system_str2vec.m) is a convenience function that takes a text string representing an interference channel and converts it to a set of vectors which will serve as inputs of `check_IA_feasibility`.
+ - [`main.m`](main.m) is a self-explanatory script which shows the use of both  `check_IA_feasibility` and `system_str2vec` by means of a simple example.
  
 
 
