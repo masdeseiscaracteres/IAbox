@@ -1,0 +1,3 @@
+## Exclude MATLAB temporary files
+*.m~
+*.asv
