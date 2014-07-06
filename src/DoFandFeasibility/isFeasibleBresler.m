@@ -15,7 +15,7 @@ function feasible=isFeasibleBresler(nT,nR,D,options)
 % http//arxiv.org/abs/1303.5678, Mar. 2013.
 
 %% Default options
-opts.Adj=eye(length(nT)); %Adjacency matrix of a fully connected scenario
+opts.Adj=~eye(length(nT)); %Adjacency matrix of a fully connected scenario
 
 %Overwrite some parameters defined in "opts"
 if exist('options','var') && isstruct(options)
@@ -56,7 +56,7 @@ K=length(d);
 
 varsT=(nT-d).*d;
 varsR=(nR-d).*d;
-eqs=(d*d').*not(opts.Adj);
+eqs=(d*d').*opts.Adj;
 
 for subset_idx=1:2^K
     subset_sel=logical(dec2bin(subset_idx,K)-'0');

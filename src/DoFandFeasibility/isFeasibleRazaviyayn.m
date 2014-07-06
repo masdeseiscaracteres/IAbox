@@ -15,7 +15,7 @@ function feasible=isFeasibleRazaviyayn(nT,nR,D,options)
 % IEEE Transactions on Signal Processing, vol. 60, no. 2, pp. 812–821, Feb. 2012.
 
 %% Default options
-opts.Adj=eye(length(nT)); %Adjacency matrix of a fully connected scenario
+opts.Adj=~eye(length(nT)); %Adjacency matrix of a fully connected scenario
 
 %Overwrite some parameters defined in "opts"
 if exist('options','var') && isstruct(options)
@@ -78,7 +78,7 @@ feasible=-1;
 varsT=(nT-d).*d;
 varsR=(nR-d).*d;
 
-eqs=(d*d').*not(opts.Adj);
+eqs=(d*d').*opts.Adj;
 
 [rxs, txs, values]=find(opts.Adj); %List of interference links
 L=length(values);
