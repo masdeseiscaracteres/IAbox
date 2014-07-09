@@ -1,0 +1,14 @@
+spqr_solve[_tbb].mexmaci64
+******************
+Works: MATLAB R2013a
+Does not work: 
+
+spqr_solve.mexw32
+******************
+Works: MATLAB R2013a, R2011a
+Does not work: R2009a
+
+spqr_solve.mexw64
+******************
+Works: MATLAB R2013a, R2011a
+Does not work: MATLAB R2010a
