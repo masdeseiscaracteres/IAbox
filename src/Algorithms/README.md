@@ -38,7 +38,7 @@ Processing Advances in Wireless Communications (SPAWC), 2013, pp. 295--299.
 
 in [`AlternatingMinLeakageStructuredChannel`](AlternatingMinLeakageStructuredChannel.m)
 
-> Ó. González, C. Lameiro and I. Santamaí­a, "*A Quadratically Convergent
+> Ó. González, C. Lameiro and I. Santamarí­a, "*A Quadratically Convergent
   Method for Interference Alignment in MIMO Interference Channels,*"
   accepted for publication in IEEE Signal Processing Letters, Jul. 2014.
 
