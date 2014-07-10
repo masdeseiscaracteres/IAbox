@@ -1,0 +1,23 @@
+# If a working copy of this repo is hosted
+# in a folder shared by different OSes,
+# avoid end-of-line normalization
+[core]
+	autocrlf=false
+
+# These files are text
+*.m       text diff=matlab
+*.md      text
+
+# The following files should be treated as binary
+# (binary is a macro for -text -diff)
+*.dylib   binary
+*.a		  binary
+*.dll     binary
+*.lib     binary
+
+*.mexmaci64 binary
+*.mexw32  binary
+*.mexw64  binary
+*.mexa64  binary
+
+*.p		  binary
