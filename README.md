@@ -34,13 +34,13 @@ Contributors
 
 List of people who have contributed to this toolbox:
 
- - ”scar Gonz·lez
+ - √ìscar Gonz√°lez
  - Christian Lameiro
  - Jacobo Fanjul
  
 License
 -------
-This repository is maintained by [”scar Gonz·lez][2]. It is distributed under the terms of the BSD (3-Clause) License.  In short, this means that everyone is free to use it, to modify it and to redistribute it on a free basis. It is not in the public domain; it is copyrighted and there are restrictions on its distribution (see [LICENSE.txt](LICENSE.txt)).
+This repository is maintained by [√ìscar Gonz√°lez][2]. It is distributed under the terms of the BSD (3-Clause) License.  In short, this means that everyone is free to use it, to modify it and to redistribute it on a free basis. It is not in the public domain; it is copyrighted and there are restrictions on its distribution (see [LICENSE.txt](LICENSE.txt)).
 
 
   [1]: https://sites.google.com/site/matlabstyleguidelines/home
