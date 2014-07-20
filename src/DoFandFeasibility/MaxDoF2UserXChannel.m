@@ -1,6 +1,10 @@
 function sumD=MaxDoF2UserXChannel(nT,nR)
+%MaxDoF2UserXChannel Upper bound on the number of information-theoretic DoF
+%   in a 2-user X channel. This bound is proven to be tight if all users
+%   are equipped with the same number of antennas.
 %
 % Reference:
+%
 % S. A. Jafar and S. Shamai, "Degrees of Freedom Region of the MIMO X Channel,"
 % IEEE Transactions on Information Theory, vol. 54, no. 1, Jan. 2008.
 
