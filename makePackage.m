@@ -3,47 +3,38 @@
 % It uses the deppkg function by Jit Sarkar
 
 % To-Do:
+% - Copy duplicate files just once (duplicates are already removed from the
+% printed list but still copied)
+% - Show an error when a file does not exist (look for it with all different
+% extensions)
 % - Modify to copy the help files associated to MEX files
-% - Copy duplicate files just once
-function make_packages(name_list)
+% - Extend to deal with different architecture MEX files (e.g. using
+% exist('spqr_solve_tbb.mexmaci64'))
+% - Be case-sensitive
+function makePackage(package_dir,varargin)
 
-root_dir='StandalonePackages';
+package_dir=fullfile(package_dir,' '); % Convert path separator to filesep and ensure we add a trailing filesep
+package_dir=package_dir(1:end-2); % Remove trailing filesep and space
+[~, package_name]=fileparts(package_dir);
 
-package=getPackageList();
-%%
-%If package names are not specified, choose all
-if ~exist('name_list','var')
-    name_list= {package.name};
+package_files=varargin(1:end);
+
+fprintf('Building package %s in %s\n',package_name,package_dir);
+
+%Remove redundant files
+file_list=[];
+for iMainFile=1:length(package_files)
+    file_list=[file_list; deppkg(package_files{iMainFile},package_dir,true)];
 end
-[~, idxs]=ismember(name_list,{package.name});
-idxs=idxs(idxs>0);
+file_list=unique(file_list);
 
-%Build packages
-for n=idxs
-    package_path=fullfile(root_dir,package(n).name);
-    fprintf('Building package %s in %s\n',package(n).name,package_path);
-    
-    %Remove redundant files
-    file_list=[];
-    for iMainFile=1:length(package(n).main_files)
-        file_list=[file_list; deppkg(package(n).main_files{iMainFile},package_path,true)];
-    end
-    file_list=unique(file_list);
-    
-    fprintf('The following files have been copied:\n');
-    for iFile=1:length(file_list)
-        fprintf('\t%s\n',file_list{iFile});
-    end
-    fprintf('\n');
+fprintf('The following files have been INCLUDED in the package:\n');
+for iFile=1:length(file_list)
+    fprintf('\t%s\n',file_list{iFile});
+end
+fprintf('\n');
 end
 
-end
-
-function package=getPackageList()
-%% Define packages
-package(1).name='ClosedForm3Users';
-package(1).main_files={'ClosedForm3Users'};
-end
 %%
 % Function to find and consolidate all file dependencies for an m-file
 % script/function or all such files in a given directory
@@ -101,11 +92,38 @@ end
 
 
 %%	Otherwise find all top-level dependencies for current file
-Dep_List	=	depfun(SRC, '-quiet', '-toponly');
 
-%	Determine which dependencies are matlab bundled functions/toolboxes
+try
+    s=getcallinfo(which(SRC));
+    list1=s(1).calls.fcnCalls.names(:); %Missing packages
+    [Dep_List_Local, idxa, idxb]=unique(list1);
+    Lines_Local=s(1).calls.fcnCalls.lines(idxa);
+    % Dep_List={which(SRC)};
+    Notfound_List={};
+    for iFile=1:length(Dep_List_Local)
+        switch exist(Dep_List_Local{iFile})
+            case {2,3,6} %.m,.mex or .p
+                %             full_filename = which(Dep_List_Local{iFile});
+                %             IN_matlab	=	strncmp(matlabroot, full_filename, length(matlabroot));
+                %             if not(IN_matlab)
+                %             Dep_List=[Dep_List; full_filename];
+                %             end
+            case 5 %built-in
+            case 0 %not-found
+                Notfound_List=[Notfound_List; Dep_List_Local{iFile}];
+                %fprintf('%s NOT FOUND at %s, line %d\n',Dep_List_Local{iFile},which(SRC),Lines_Local(iFile))
+                fprintf('%s NOT FOUND at <a href="matlab: opentoline(which(''%s''),%d)">%s, line %d</a>\n',Dep_List_Local{iFile},which(SRC),Lines_Local(iFile),SRC,Lines_Local(iFile))
+                
+            otherwise
+                warning('This kind of file is not considered');
+        end
+    end
+end
+
+Dep_List	=	depfun(SRC, '-quiet', '-toponly'); %Missing not found files
+% %	Determine which dependencies are matlab bundled functions/toolboxes
 IN_matlab	=	strncmp(matlabroot, Dep_List, length(matlabroot));
-%	Remove them from the list
+% %	Remove them from the list
 Dep_List	=	Dep_List(~IN_matlab);
 
 %	First item is always the current file itself
