@@ -1,5 +1,10 @@
 Implemented Feasibility Results (by publication date)
 -----------------------------------------------------
+> S. A. Jafar and S. Shamai, "*Degrees of Freedom Region of the MIMO X Channel*,"
+  IEEE Transactions on Information Theory, vol. 54, no. 1, Jan. 2008.
+
+in [`MaxDoF2UserXChannel`](MaxDoF2UserXChannel.m)
+  
 > C. M. Yetis, T. Gou, S. A. Jafar, and A. H. Kayran, "*On feasibility of 
   interference alignment in MIMO interference networks*,"
   IEEE Trans. Signal Process., vol. 58, no. 9, pp. 4771–4782, 2010.
@@ -27,6 +32,6 @@ in [`isFeasibleBresler`](isFeasibleBresler.m), [`ExactNumberOfSolutions`](ExactN
   Interference Alignment in MIMO Channels with Constant Coefficients*," 
   IEEE Transactions on Information Theory, vol. 60, no. 3, pp. 1840-1856, Mar. 2014.
 
-in [`Not implemented yet`]()
+in [`isFeasibleNumericalTest`](isFeasibleNumericalTest.m)
 
 
