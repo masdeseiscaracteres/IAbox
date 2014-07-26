@@ -1,4 +1,4 @@
-![IAbox logo][doc/logo.svg] IAbox
+<img src="https://raw.githubusercontent.com/masdeseiscaracteres/IAbox/master/doc/logo.png" width="80px" height="80px"/> IAbox
 ========
 What is IAbox?
 --------------
