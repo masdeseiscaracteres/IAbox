@@ -1,5 +1,5 @@
-Interference Alignment MATLAB/Octave Toolbox (IAbox)
-=============================================================
+IAbox
+========
 What is IAbox?
 --------------
 The Interference Alignment MATLAB/Octave Toolbox (IAbox) is a set of 
@@ -13,11 +13,13 @@ from the wireless communications world, have also been implemented.
 This is a work in progress. It may (and will) contain errors, bugs, misconceptions and even some working stuff.
 Critics, bug reports, collaborations and any sort of feedback is welcome.
 
-[Implemented Algorithms (by publication date)](src/Algorithms/README.md)
+Implemented Algorithms
 --------------------------------------------
+[Listed by publication date](src/Algorithms/README.md)
 
-[Implemented Feasibility Results (by publication date)](src/DoFandFeasibility/README.md)
+Implemented DoF / Feasibility Results
 -----------------------------------------------------
+[Listed by publication date](src/DoFandFeasibility/README.md)
 
 Naming / style conventions
 --------------------------
@@ -27,7 +29,7 @@ Guide Wiki that can be found at
 
 Input arguments to algorithms/functions are passed in the following order
 
-`H,U,V,D,W,nT,nR,d`
+`nT,nR,H,U,V,D,W`
 
 Contributors
 ------------
