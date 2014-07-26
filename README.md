@@ -1,4 +1,4 @@
-IAbox
+![IAbox logo][doc/logo.svg] IAbox
 ========
 What is IAbox?
 --------------
