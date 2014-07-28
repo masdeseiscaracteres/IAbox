@@ -1,5 +1,5 @@
-%This script finds distinct solutions for a given interference channel using the
-%GaussNewton method
+% This script finds distinct solutions for a given interference channel using the
+% Gauss-Newton method
 clc;
 clear;
 close all;
