@@ -1,15 +1,15 @@
 function [U, V] = IncrementalSNR(H,target_SNR_dB)
 % Implementation of the incremental SNR algorithm with simplified pricing updates.
 %
-% Not guaranteed to converge according to:
-% D. A. Schmidt, C. Shi, R. A. Berry, M. L. Honig, W. Utschick, "Comparison
-% of distributed beamforming algorithms for MIMO interference networks,"
-% IEEE Transactions on Signal Processing, vol. 61, no. 13, Jul. 2013.
-%
 % Reference:
 % Schmidt, D.A.; Utschick, W.; Honig, M.L., "Beamforming techniques for single-beam MIMO interference networks,"
 % 2010 48th Annual Allerton Conference on Communication, Control, and Computing (Allerton),  pp.1182-1187, Sept. 29 2010 - Oct. 1 2010
 % doi: 10.1109/ALLERTON.2010.5707048
+%
+% Not guaranteed to converge according to the following reference (where an improved version can be found):
+% D. A. Schmidt, C. Shi, R. A. Berry, M. L. Honig, W. Utschick, "Comparison
+% of distributed beamforming algorithms for MIMO interference networks,"
+% IEEE Transactions on Signal Processing, vol. 61, no. 13, Jul. 2013.
 
 nT=cellfun(@(x) size(x,2),H(1,:));
 nR=cellfun(@(x) size(x,1),H(:,1));
@@ -24,9 +24,9 @@ sinr=zeros(K,1);
 A=cell(K,1);
 
 for us=1:K
-    [V{us}, ~] = eigs(H{us,us}'*H{us,us},1);
+    [~,~,G]=svd(H{us,us});
+    V{us}=G(:,1); %Principal eigenvector of H{us,us}'*H{us,us}
 end
-Vini=V;
 
 target_SNR=10^(target_SNR_dB/10);
 SNR_dB=0; %Initial SNR in dB
