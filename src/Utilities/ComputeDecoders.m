@@ -61,8 +61,9 @@ for rx=1:K %for each receiver
     for tx=1:L
         Q=Q+H{rx,tx}*V{tx}*V{tx}'*H{rx,tx}';
     end
-    M=H{rx,rx}*V{rx}; %ToDO: extend to X networks
+    M=H{rx,rx}*V{rx}; %ToDo: extend to X networks
     U{rx}=inv(Q)'*M;
+    %ToDo: Constrain to unit-power
 end
 
 end
