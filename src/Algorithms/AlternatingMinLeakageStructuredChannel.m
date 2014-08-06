@@ -31,8 +31,8 @@ d=diag(D);
 
 %Abbreviate some variable names
 L=opts.L;
-M=M/L;
-N=N/L;
+% nT=M/L; %Obtain number of TX antennas from the dimension of the channel matrices
+% nR=N/L; %Obtain number of RX antennas from the dimension of the channel matrices
 
 %% Initialitation
 
@@ -40,11 +40,11 @@ V=cell(K,1);
 U=cell(K,1);
 for k=1:K
     if opts.Improper
-        V{k}=randn(2*L*M(k),d(k));   % random real precoder
-        U{k}=randn(2*L*N(k),d(k));   % random real decoder
+        V{k}=randn(M(k),d(k));   % random real precoder
+        U{k}=randn(N(k),d(k));   % random real decoder
     else
-        V{k}=crandn(L*M(k),d(k));   % random complex precoder
-        U{k}=crandn(L*N(k),d(k));   % random complex decoder
+        V{k}=crandn(M(k),d(k));   % random complex precoder
+        U{k}=crandn(N(k),d(k));   % random complex decoder
     end
     [Q,~]=qr(V{k});
     V{k}=Q(:,1:d(k))/sqrt(d(k));
