@@ -25,8 +25,8 @@ end
 %%
 K=length(H);
 
-M=cellfun('size',H(1,:),2)';
-N=cellfun('size',H(:,1),1);
+M=cellfun('size',H(1,:),2)'; %Number of columns in channel matrices
+N=cellfun('size',H(:,1),1); %Number of rows in channel matrices
 d=diag(D);
 
 %Abbreviate some variable names
