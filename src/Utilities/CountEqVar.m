@@ -1,48 +1,72 @@
-function [Ne Nv]=CountEqVar(nT, nR, d, K,int_graph)
-% This function counts IA equations and free variables in an 
-% interference channel
+function [Ne, Nv]=CountEqVar(nT,nR,D,options)
+% COUNTEQVAR Counts the equations and free variables involved in the
+% polynomial equations describing the IA problem for the system described
+% by the input arguments nT, nR and D, where nT (nR) is a vector of
+% transmit (receive) antennas and D is the demands matrix, i.e., D(i,j)
+% denotes the number of streams the j-th transmitter wishes to send to the
+% i-th receiver.
+%
+% Usage:
+%
+% [Ne, Nv]=CountEqVar(nT,nR,D)
+%
+% This is a generalization of the results in the reference below to
+% partially connected networks. The following assumptions have been made:
+% - A zero-gain channel does not impose any constraint (or equation).
+% - A node which is either not causing interference or being interfered is
+%   ignored when counting free variables.
+% - Transmitters/receivers are not aware of the network connectivity.
+%   Consequently, they cannot adapt the number of columns in their
+%   precoders/decoders to that supported by the network. Precoder/decoder
+%   dimensions are dictated by the demands matrix.
+%
+% Reference:
+% Sun, Hua, Tiangao Gou, and Syed Ali Jafar "Degrees of freedom of MIMO X
+% networks: Spatial scale invariance and one-sided decomposability,"
+% IEEE Transactions on Information Theory, vol. 59, no. 12, 8377-8385.
 
-nT=nT(:);
-nR=nR(:);
-d=d(:);
+%% Default value for optional parameters
+opts.A=ones(size(D)); %Connectivity matrix: fully-connected matrix by default
+opts.ConnectivityAware=false; %Transmitters/receivers are not aware of the network connectivity
 
-%If interference graph matrix is not passed as an argument, assume the
-%network is fully connected
-if ~exist('int_graph','var')
-   int_graph=double(~eye(K,K)); 
+%Overwrite some parameters defined in "opts"
+if exist('options','var') && isstruct(options)
+    fieldNames=fieldnames(options);
+    for iField = 1:length(fieldNames)
+        opts.(fieldNames{iField})=options.(fieldNames{iField});
+    end
 end
 
-txs=diag(any(int_graph,2)); %Active transmitters
-rxs=diag(any(int_graph)); %Active receivers
+%% Some definitions
+nT=nT(:); %Number of TX antennas as a column vector
+nR=nR(:); %Number of RX antennas as a column vector
+[K, L] = size(D); %Number of receivers and transmitters
 
-Nv=d'*txs*nT+d'*rxs*nR-d'*(txs+rxs)*d;%Count variables
-Ne=d'*int_graph*d;%Count equations
+if opts.ConnectivityAware
+    Deff=(opts.A.*D); %Effective demands matrix, if nodes are aware of network connectivity they can adapt their demands
+else
+    Deff=D;
+end
+% cT=sum(Deff,1)'; %Number of columns of the precoders
+cR=sum(Deff,2); %Number of columns of the decoders
 
-%% %ToDo: Generalize to partially connected X networks
-% L=length(nT); %Number of transmitters
-% K=length(nR); %Number of receivers
+[lmat kmat]=meshgrid(1:L,1:K);
+%% Number of variables
+% Precoder variables
+Ap=arrayfun(@(k,l) sum(opts.A([1:k-1 k+1:end],l)~=0),kmat,lmat);
+activeV=and(Deff,Ap); %activeV(j,p) is 1 if there are equations involving Vjp
+Nv_tx_jp=bsxfun(@minus,nT',Deff).*Deff; %Every column in a subprecoder is orthogonal to each other but not necessarily to every other subprecoder's columns
+Nv_tx=sum(sum(Nv_tx_jp(activeV)));
 
-% D=ones(K,L); %Demands matrix
-% A=ones(K,L); %Adjacency matrix
-% cT=sum(D,1).'; %Number of columns
-% cR=sum(D,2); %Number of rows
+% Decoder variables
+Dp=arrayfun(@(k,l) sum(Deff([1:k-1 k+1:end],l)),kmat,lmat);
+temp=sum(opts.A.*Dp,2); %temp(i): Number of interfering streams at the i-th receiver
+activeU=(temp>0); % activeU(k) is 1 if there are equations involving Uk
+Nv_rx_k=(nR-cR).*cR;%Every column in a decoder is orthogonal to each other
+Nv_rx=sum(Nv_rx_k(activeU));
 
+% Total number of variables
+Nv=Nv_tx+Nv_rx;
 
-%Double check with the correct values for a symmetric scenario
-%Nv=L*K*d(1,1)*(nT(1)+nR(1)-(L+1)*d(1,1))
-%Ne=L^2*K*d(1,1)^2*(K-1)
-
-return
-%It may be useful...
-
-%WRONG! Nv=cT.'*(nT-cT)+(nR-cR).'*cR; %Number of variables
-%WRONG! Ne=sum(sum(A.*(cR*cT.'))); %Number of equations
-% [lmat kmat]=meshgrid(1:L,1:K);
-% 
-% Dp=arrayfun(@(k,l) sum(D([1:k-1 k+1:end],l)),kmat,lmat);
-% Arow_part=(A.*Dp)~=0; %Arow_part is 1 if there are equations involving Hkl
-% 
-% Ap=arrayfun(@(k,l) sum(A([1:k-1 k+1:end],l)~=0),kmat,lmat);
-% Acol_part=and(D,Ap); %Acol_part(j,p) is 1 if there are equations involving Vjp
-% 
-% Act_rx = find(sum(A.*D,2)>0); % Active_Rx_finder
+%% Number of equations
+Ne=temp'*cR;
