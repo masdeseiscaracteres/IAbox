@@ -1,38 +1,42 @@
-function [Ne Nv]=CountEqVar(nT, nR, d, K,int_graph)
-% This function counts IA equations and free variables in an 
-% interference channel
+function [Ne, Nv]=CountEqVar(nT,nR,D,opts)
+% COUNTEQVAR Counts the equations and free variables involved in the 
+% polynomial equations describing the IA problem for the system described 
+% by the input arguments nT, nR and D, where nT (nR) is a vector of
+% transmit (receive) antennas and D is the demands matrix, i.e., D(i,j) 
+% denotes the number of streams the j-th transmitter wishes to send to the
+% i-th receiver.
+%
+% Usage:
+%
+% [Ne, Nv]=CountEqVarX(nT,nR,D)
+% 
+% This is a generalization of the results in the reference below to 
+% partially connected networks. The following assumptions have been made:
+% - A zero-gain channel does not impose any constraint (or equation).
+% - A node which is either not causing interference or being interfered is
+%   ignored when counting free variables.
+%
+% Reference: 
+% Sun, Hua, Tiangao Gou, and Syed Ali Jafar "Degrees of freedom of MIMO X 
+% networks: Spatial scale invariance and one-sided decomposability,"
+% IEEE Transactions on Information Theory, vol. 59, no. 12, 8377-8385.
 
-nT=nT(:);
-nR=nR(:);
-d=d(:);
+nT=nT(:); %Number of TX antennas as a column vector
+nR=nR(:); %Number of RX antennas as a column vector
+[N, M] = size(D); %Number of receivers and transmitters
 
-%If interference graph matrix is not passed as an argument, assume the
-%network is fully connected
-if ~exist('int_graph','var')
-   int_graph=double(~eye(K,K)); 
+%% Number of variables
+sumDtx=sum(D,2);
+Nv_tx=sum(sum(bsxfun(@minus,nT',D).*D));
+Nv_rx=(nR-sumDtx)'*sumDtx;
+Nv=Nv_tx+Nv_rx;
+
+%% Number of equations
+Ne=0;
+for rx=1:N
+Ne=Ne+sum(sumDtx([1:rx-1 rx+1:N]))*sum(D(rx,:));
 end
 
-txs=diag(any(int_graph,2)); %Active transmitters
-rxs=diag(any(int_graph)); %Active receivers
-
-Nv=d'*txs*nT+d'*rxs*nR-d'*(txs+rxs)*d;%Count variables
-Ne=d'*int_graph*d;%Count equations
-
-%% %ToDo: Generalize to partially connected X networks
-% L=length(nT); %Number of transmitters
-% K=length(nR); %Number of receivers
-
-% D=ones(K,L); %Demands matrix
-% A=ones(K,L); %Adjacency matrix
-% cT=sum(D,1).'; %Number of columns
-% cR=sum(D,2); %Number of rows
-
-
-%Double check with the correct values for a symmetric scenario
-%Nv=L*K*d(1,1)*(nT(1)+nR(1)-(L+1)*d(1,1))
-%Ne=L^2*K*d(1,1)^2*(K-1)
-
-return
 %It may be useful...
 
 %WRONG! Nv=cT.'*(nT-cT)+(nR-cR).'*cR; %Number of variables
