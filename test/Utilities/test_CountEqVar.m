@@ -3,16 +3,17 @@ clear;
 close all;
 
 MAXANT=20;
-MAXD=5;
+MAXD=6;
 MIND=0;
-MAXUSERS=5;
-MINUSERS=2;
-
+MAXUSERS=7;
+MINUSERS=1;
+DENSITY=1;
 
 while 1
     M=randi([MINUSERS MAXUSERS]);  %Number of transmitters
     N=randi([MINUSERS MAXUSERS]); %Number of receivers
     D=randi([MIND MAXD],N,M); %Demands matrix
+    A=1-logical(sprand(size(D,1),size(D,2),1-DENSITY));
     
     MINTXANT=sum(D)';
     MINRXANT=sum(D,2);
@@ -29,22 +30,17 @@ while 1
         continue;
     end
     
-    % K=4;
-    % nT=5*ones(K,1);
-    % nR=5*ones(K,1);
-    % D=diag(2*ones(K,1));
-    
-    H=GenerateChannel(nT,nR);
-    [U V]=RandomBeamforming(H,D);
-    B=buildlinearmappingXnetwork_canonical(H,U,V,ones(size(D)),D);
-    
-    [Ne1, Nv1]=size(B);
+    % Option 1
+    [Ne1, Nv1]=CountEqVar(nT,nR,D,struct('A',A));
     [Ne1 Nv1]
     
-    [Ne2, Nv2]=CountEqVarX(nT,nR,D);
+    % Option 2
+    H=GenerateChannel(nT,nR);
+    [U V]=RandomBeamforming(H,D);
+    B=buildlinearmappingXnetwork_canonical(H,U,V,A,D);
+    
+    [Ne2, Nv2]=size(B);
     [Ne2 Nv2]
     
-    if Ne1~=0 && Ne2~=0 %They may differ is number of equations is zero
     assert(all([Ne1 Nv1]==[Ne2 Nv2]))
-    end
 end
