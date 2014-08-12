@@ -30,7 +30,8 @@ nT=3*ones(K,1);     % Tx antennas
 nR=2*ones(K,1);     % Rx antennas
 
 %% Generate random channels and initialization point
-H = generatechannel(nT,nR,A);
+options.A=A;
+H = GenerateChannel(nT,nR,options);
 V0=arrayfun(@(a,b)orth(crandn(a,b)),nT',diag(D)','UniformOutput',false);
 
 %%

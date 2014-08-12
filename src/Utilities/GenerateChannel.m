@@ -1,12 +1,26 @@
-function H = generatechannel(nT,nR,A,options)
-% GENERATECHANNEL
-
-% NumExtensions: number of channel extensions (default is 1, i.e. no
+function H = GenerateChannel(nT,nR,options)
+% GENERATECHANNEL Generate a multiuser MIMO channel
+%
+% Input:
+%   nT: Lx1 vector with number of transmit antennas at each transmitter
+%   nR: Kx1 vector with number of receive antennas at each receiver
+%
+% Output:
+%
+%   H: KxL cell array containing random channel matrices
+%
+% Options:
+%
+%   NumExtensions: number of channel extensions (default is 1, i.e. no
 % channel extension)
-% ConstantExtensions: 1 (default is independent channel extensions)
-% ACS: 1 (default is symmetric complex signaling)
+%   ConstantExtensions: 1 (default is independent channel extensions)
+%   ACS: 1 (default is symmetric complex signaling)
+
+nTxUser=length(nT);
+nRxUser=length(nR);
 
 %Default values
+opts.A=true(nRxUser,nTxUser);
 opts.NumExtensions=1;
 opts.ConstantExtensions=false;
 opts.ACS=false; %Asymmetric complex signaling
@@ -19,15 +33,7 @@ if exist('options','var') && isstruct(options)
     end
 end
 
-nTxUser=length(nT);
-nRxUser=length(nR);
-
-%Assume network is fully connected if A not passed as an argument
-if ~exist('A','var') || isempty(A)
-    A=true(nRxUser,nTxUser);
-else
-    A=logical(A);
-end
+A=logical(opts.A);
 
 acsFunc=@(x) [real(x) -imag(x); imag(x) real(x)];
 

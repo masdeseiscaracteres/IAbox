@@ -34,7 +34,8 @@ nR=2*ones(K,1);     % Rx antennas
 % nR=5*ones(K,1);     % Rx antennas
 
 %% Generate random channels and maximum power initialization point
-H = generatechannel(nT,nR,A);
+options.A=A;
+H = GenerateChannel(nT,nR,A);
 [U,V]=RandomBeamforming(H,D);
 
 % V=cell(K,1);

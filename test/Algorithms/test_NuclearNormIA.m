@@ -13,6 +13,10 @@ epsilon=0.1; % Minimum eigenvalue constraint
 MaxIter=10; % Maximum number of iterations
 IleakTol=1e-10; % Interference leakage tolerance
 
-H = generatechannel(nT,nR,A,struct('NumExtensions',T,'ACS',false,'ConstantExtensions',true));
+options.NumExtensions=T;
+options.ACS=false;
+options.ConstantExtensions=true;
+options.A=A;
+H = GenerateChannel(nT,nR,options);
 
-NuclearNormIA(H,D,epsilon,MaxIter,IleakTol);
+RankConstrainedRankMinimization(H,D,epsilon,MaxIter,IleakTol);

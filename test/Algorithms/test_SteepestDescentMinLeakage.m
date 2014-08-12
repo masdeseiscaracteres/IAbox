@@ -8,7 +8,8 @@ A=ones(K);          % Fully connected system
 nT=5*ones(K,1);     % Tx antennas
 nR=5*ones(K,1);     % Rx antennas
 
-H = generatechannel(nT,nR,A);
+options.A=A;
+H = GenerateChannel(nT,nR,options);
 
 V0=arrayfun(@(a,b)orth(crandn(a,b)),nT',diag(D)','UniformOutput',false);
 

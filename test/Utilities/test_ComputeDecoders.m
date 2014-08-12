@@ -3,15 +3,16 @@ clear;
 close all;
 
 K = 4;              % Num users
-D=diag(2*ones(K,1));          % Demands matrix
-A=ones(K);          % Fully connected system (Xnetwork)
+D=diag(2*ones(K,1));% Demands matrix
+A=ones(K);          % Fully connected system
 nT=5*ones(K,1);     % Tx antennas
 nR=5*ones(K,1);     % Rx antennas
 
 SNR_dB=0:5:30;
 
 %% Find a random IA solution
-H0=GenerateChannel(nT,nR,D);
+options.A=A;
+H0=GenerateChannel(nT,nR,options);
 [U, V]=RandomBeamforming(H0,D); %Call the RandomBeamforming algorithm to obtain
 H=InverseIA(U,V);
 for us=1:K

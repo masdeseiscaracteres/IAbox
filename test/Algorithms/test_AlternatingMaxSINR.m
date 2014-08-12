@@ -90,7 +90,11 @@ nR=5*ones(K,1);     % Rx antennas
 SNR_dB=0:20:40;
 
 %%
-H = GenerateChannel(nT,nR,A,struct('NumExtensions',T,'ACS',false,'ConstantExtensions',true));
+options.NumExtensions=T;
+options.ACS=false;
+options.ConstantExtensions=true;
+options.A=A;
+H = GenerateChannel(nT,nR,options);
 [U0,V0] = RandomBeamforming(H,D);
 
 %% MinIL
