@@ -10,8 +10,8 @@ function [U,V]=AlternatingMinLeakageStructuredChannel(H,D,options)
 opts.MaxIter=5000; %Maximum number of iterations
 opts.Tol=1e-12; %Target interference leakage
 opts.epsilon=1e-3; % Minimum eigenvalue constraint
-opts.Improper=false; %Assume proper signaling by default
-opts.L=1; %Number of symbols extension (assume no symbol extension by default)
+opts.ACS=false; %Assume proper signaling by default
+opts.NumExtensions=1; %Number of symbols extension (assume no symbol extension by default)
 opts.Verbose=false;
 
 %Overwrite some parameters defined in "opts"
@@ -30,7 +30,7 @@ N=cellfun('size',H(:,1),1); %Number of rows in channel matrices
 d=diag(D);
 
 %Abbreviate some variable names
-L=opts.L;
+L=opts.NumExtensions;
 % nT=M/L; %Obtain number of TX antennas from the dimension of the channel matrices
 % nR=N/L; %Obtain number of RX antennas from the dimension of the channel matrices
 
@@ -39,7 +39,7 @@ L=opts.L;
 V=cell(K,1);
 U=cell(K,1);
 for k=1:K
-    if opts.Improper
+    if opts.ACS
         V{k}=randn(M(k),d(k));   % random real precoder
         U{k}=randn(N(k),d(k));   % random real decoder
     else
@@ -73,7 +73,7 @@ while n<=opts.MaxIter+1 && Cost(n-1)>=opts.Tol
         [eigen,i]=sort(diag(abs(D)),'ascend');
         A=A(:,i);
         Ux=A(:,1:d(rx));
-        if opts.Improper & imag(Ux)
+        if opts.ACS & imag(Ux)
             continue;
         end
         Qx=Ux'*Qd*Ux;
@@ -88,7 +88,7 @@ while n<=opts.MaxIter+1 && Cost(n-1)>=opts.Tol
                 [eigen,i]=sort(diag(abs(D)),'ascend');
                 A=A(:,i);
                 Ux=A(:,1:d(rx));
-                if opts.Improper & imag(Ux)
+                if opts.ACS & imag(Ux)
                     continue;
                 end
                 Qx=Ux'*Qd*Ux;
@@ -118,7 +118,7 @@ while n<=opts.MaxIter+1 && Cost(n-1)>=opts.Tol
         [eigen,i]=sort(diag(abs(D)),'ascend');
         A=A(:,i);
         Vx=A(:,1:d(tx));
-        if opts.Improper & imag(Vx)
+        if opts.ACS & imag(Vx)
             continue;
         end
         Rx=Vx'*Rd*Vx;
@@ -132,7 +132,7 @@ while n<=opts.MaxIter+1 && Cost(n-1)>=opts.Tol
                 [eigen,i]=sort(diag(abs(D)),'ascend');
                 A=A(:,i);
                 Vx=A(:,1:d(tx));
-                if opts.Improper & imag(Vx)
+                if opts.ACS & imag(Vx)
                     continue;
                 end
                 Rx=Vx'*Rd*Vx;
