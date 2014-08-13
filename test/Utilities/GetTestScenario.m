@@ -1,12 +1,12 @@
 function [nT nR D opts] = GetTestScenario(num)
 
 if isempty(num)
-    num=randi(5);
+    num=randi(10);
 end
 
 switch num
-   % Syntax:
-   % case {num,'name'}
+    % Syntax:
+    % case {num,'name'}
     case {1,'(2x2,1)^3'}
         % Single-stream IC: (2x2,1)^3
         K=3;
@@ -51,7 +51,18 @@ switch num
         opts.ACS=false;
         opts.A=ones(K);
         
-    case {5,'(5x5,2)^4'}
+    case {5,'[(1x1,2)^3,5]'}
+        %[(1x1,2)^3,5], proper signaling, constant channels, 1.2 DoF
+        K = 3;
+        D=diag(4*ones(K,1));
+        nT=1*ones(K,1);
+        nR=1*ones(K,1);
+        opts.NumExtensions=5;
+        opts.ConstantExtensions=true;
+        opts.ACS=true;
+        opts.A=ones(K);
+        
+    case {6,'(5x5,2)^4'}
         % Multi-stream IC: (5x5,2)^4
         K=4;
         D=diag(2*ones(K,1));
@@ -61,7 +72,49 @@ switch num
         opts.ConstantExtensions=false;
         opts.ACS=false;
         opts.A=ones(K);
-      
+        
+    case {7,'Single-beam IBC'}
+        nT=3*ones(3,1);
+        nR=4*ones(6,1);
+        D=kron(eye(3),[1;1]);
+        opts.NumExtensions=1;
+        opts.ConstantExtensions=true;
+        opts.ACS=false;
+        opts.A=ones(size(D));
+        
+    case {8,'2UserXC_small'}
+        % Example from Agustín and Vidal's paper, 5 DoF
+        K = 2;
+        D = [1 1;2 1]; %Max 5 DoF without channel extensions
+        opts.A=ones(K);          % Fully connected system (Xnetwork)
+        nT = [4 3]';
+        nR = [2 5]';
+        opts.NumExtensions=1;
+        opts.ConstantExtensions=true;
+        opts.ACS=false;
+        opts.A=ones(K);
+        
+    case {9, '2UserXC_large'}
+        % Example from Agustín and Vidal's paper, 29 DoF
+        K = 2;
+        D = [5 8; 5 11];
+        nT = [5 8]';     % Tx antennas
+        nR = [6 7]';     % Rx antennas
+        opts.NumExtensions=3;
+        opts.ConstantExtensions=false;
+        opts.ACS=false;
+        opts.A=ones(K);
+        
+    case {10,'3UserXN'}
+        K=3;
+        nT=5*ones(K,1);
+        nR=5*ones(K,1);
+        D=ones(K);
+        opts.NumExtensions=1;
+        opts.ConstantExtensions=false;
+        opts.ACS=false;
+        opts.A=ones(K);
+        
     otherwise
         error('Undefined scenario');
 end
