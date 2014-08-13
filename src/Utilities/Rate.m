@@ -34,7 +34,7 @@ R=zeros(K,1);          % store the achievable rates for each user
 Qtx_ch=cell(K,K);  % interference covariance matrices (transmitter + channel)  (Size: nR(uu) x nR(uu))
 Qrx=cell(K,1); % interference + noise covariance matrices at the receiver (transmitter + channel + receiver) (Size: d(uu) x d(uu))
 
-if isscalar(W)
+if ~iscell(W)
    Wp=cell(K,1);
    for rx=1:K
        Wp{rx}=W*eye(nR(rx));
