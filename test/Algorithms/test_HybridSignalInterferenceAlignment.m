@@ -107,7 +107,7 @@ A=ones(K);
 D=diag(4*ones(K,1));
 
 %% Simulation parameters
-SNR_dB=20;
+SNR_dB=-20:5:60;
 
 %%
 options.NumExtensions=T;
@@ -121,17 +121,37 @@ options.Verbose=0;
 options.StartingPoint.U=U0;
 options.StartingPoint.V=V0;
 options.MaxIter=5000;
-options.Tol=1e-3;
+[U1, V1, IL1]=AlternatingMinLeakage(H,D,options);
 
-%% Run the algorithm
-tic;
-[U, V, IL]=AlternatingMinLeakage(H,D,options);
-t=toc;
-fprintf('Elapsed time: %.2f, Interference leakage: %.2e\n',t,IL(end));
-
-%% Plot convergence curve
-semilogy(0:length(IL)-1,IL,'b');
+options.Verbose=0;
+options.StartingPoint.U=U0;
+options.StartingPoint.V=V0;
+options.w=0.01;
+options.EndingUpdate=1e-4;
+options.MaxIter=5000;
+[U2, V2, IL2]=HybridSignalInterferenceAligment(H,D,options);
+%% Compute sum-rate performance
+SR1=zeros(length(SNR_dB),1);
+SR2=zeros(length(SNR_dB),1);
+for iSNR=1:length(SNR_dB);
+    noise_var=10^(-SNR_dB(iSNR)/10); %Noise variance at each antenna
+    
+    %Generate noise covariance matrices
+    W=cell(K,1);
+    for rx=1:K
+        W{rx}=noise_var*eye(nR(rx));
+    end
+    options.W=W;
+    SR1(iSNR)=sum(Rate(H,U1,V1,W));
+    SR2(iSNR)=sum(Rate(H,U2,V2,W));
+end
+%% Plot
+plot(SNR_dB,SR1,'b-')
+hold on;
+plot(SNR_dB,SR2,'r--')
+xlabel('SNR [dB]');
+ylabel('Sum-rate [bit/s/Hz]');
+lh=legend('Min. Leakage','Joint Signal+Interference optim.');
+set(lh,'Location','NorthWest');
 grid on;
-xlabel('Iteration number');
-ylabel('Interference leakage');
-title('Interference leakage evolution with the number of iterations');
+title('MinLeakage vs. Joint Signal+Interf. optim.')

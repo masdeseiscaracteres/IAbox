@@ -13,10 +13,11 @@ nT=5*ones(K,1);      % Tx antennas
 nR=5*ones(K,1);      % Rx antennas
 D=diag(2*ones(K,1)); % Demands matrix
 
-K = 3;               % Number of users
-nT=2*ones(K,1);      % Tx antennas
-nR=2*ones(K,1);      % Rx antennas
-D=diag(1*ones(K,1)); % Demands matrix
+%% (2x2,1)^3
+% K = 3;               % Number of users
+% nT=2*ones(K,1);      % Tx antennas
+% nR=2*ones(K,1);      % Rx antennas
+% D=diag(1*ones(K,1)); % Demands matrix
 %% (3x3,1)^5
 % K = 5;
 % nT=3*ones(K,1);
@@ -42,12 +43,17 @@ D=diag(1*ones(K,1)); % Demands matrix
 % nT=[3 3 2 2];
 % nR=[2 2 3 3];
 % D=diag([1 1 1 1]);
+%% (9x9,3)^3
+% K=3;
+% nT=9*ones(K,1);
+% nR=9*ones(K,1);
+% D=3*ones(K,1);
+%% (12x12,4)^5
+% K=5;
+% nT=12*ones(K,1);
+% nR=12*ones(K,1);
+% D=diag(4*ones(K,1));
 
-%%
-K=3;
-nT=[9 9 9];
-nR=nT;
-D=3*ones(K,1);
 %% Prepare input arguments
 % Generate a random interference channel
 H = cell(K,K); %Channel's cell array
@@ -59,8 +65,9 @@ end
 % Define some options
 options.NwtTol=1e-15;
 options.Verbose=0;
+options.Solver='auto';
 
-%% Now run the algorithm
+%% Run the algorithm
 tic;
 [U,V,IL,success] = GaussNewtonMinLeakage(H,D,options);
 t=toc;
